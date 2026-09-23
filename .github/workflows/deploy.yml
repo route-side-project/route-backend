@@ -1,8 +1,9 @@
+# Docker Hub / 배포 서버 secrets(DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, SERVER_HOST,
+# SERVER_PORT, SERVER_USER, SERVER_SSH_PRIVATE_KEY)가 등록되면 push 트리거를 되살리세요.
 name: Deploy
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/route-backend
