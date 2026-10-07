@@ -1,15 +1,17 @@
-# Docker Hub / 배포 서버 secrets(DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, SERVER_HOST,
-# SERVER_PORT, SERVER_USER, SERVER_SSH_PRIVATE_KEY)가 등록되면 push 트리거를 되살리세요.
+# 배포 서버(SSH) secrets(SERVER_HOST, SERVER_PORT, SERVER_USER, SERVER_SSH_PRIVATE_KEY)가
+# 준비되면 아래 "Deploy to Server" 스텝의 주석을 해제하세요.
 name: Deploy
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/route-backend
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,17 +39,17 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          port: ${{ secrets.SERVER_PORT }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/projects/route
-
-            docker compose pull app
-            docker compose up -d app
-
-            docker image prune -f
+      # - name: Deploy to Server
+      #   uses: appleboy/ssh-action@v1.0.3
+      #   with:
+      #     host: ${{ secrets.SERVER_HOST }}
+      #     port: ${{ secrets.SERVER_PORT }}
+      #     username: ${{ secrets.SERVER_USER }}
+      #     key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+      #     script: |
+      #       cd ~/projects/route
+      #
+      #       docker compose pull app
+      #       docker compose up -d app
+      #
+      #       docker image prune -f
